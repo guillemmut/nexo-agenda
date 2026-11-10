@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Nexo · tu agenda conectada</title>
+<meta name="theme-color" content="#F8F6EF">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Nexo">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F8F6EF;--ink:#1F2430;--muted:#5B6170;--line:#ECE9E0;--mint:#CDEBD3;--mintD:#1E5233;--sky:#CFE3F7;--skyD:#1E3A6E;--butter:#FBEFB8;--butterD:#6B5313;--rose:#FAD1E0;--roseD:#7A1340;--lav:#E3DAF7;--lavD:#4C1D95}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:Inter,-apple-system,system-ui,sans-serif}
+body{display:flex;flex-direction:column;height:100vh;height:100dvh;overflow:hidden}
+button{font-family:inherit;color:inherit;cursor:pointer}
+.head{flex:none;padding:calc(env(safe-area-inset-top) + 12px) 20px 12px;display:flex;flex-direction:column;gap:12px}
+.brand{display:flex;justify-content:space-between;align-items:center}
+.logo{display:flex;align-items:center;gap:8px;font:700 18px 'Space Grotesk',sans-serif;letter-spacing:-.3px}
+.logo i{width:30px;height:30px;border-radius:10px;background:var(--mint);display:flex;align-items:center;justify-content:center}
+.avatar{width:44px;height:44px;border-radius:22px;border:0;background:var(--butter);font:700 16px 'Space Grotesk',sans-serif}
+h1{margin:0;font:700 30px/1.1 'Space Grotesk',sans-serif;letter-spacing:-.8px}
+.sub{font-size:14px;color:var(--muted);margin-top:2px}
+.back{display:flex;align-items:center;gap:4px;background:none;border:0;padding:0 0 6px;color:var(--muted);font-size:14px;min-height:32px}
+main{flex:1;min-height:0;overflow-y:auto;padding:4px 20px 100px;-webkit-overflow-scrolling:touch}
+.stack{display:flex;flex-direction:column;gap:18px}
+.list{display:flex;flex-direction:column;gap:10px}
+h2{margin:0;font:600 18px 'Space Grotesk',sans-serif}
+.glabel{font-size:13px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px}
+.row{display:flex;gap:12px;align-items:flex-start}
+.check{flex:none;width:44px;height:44px;margin:-10px -8px -10px -10px;display:flex;align-items:center;justify-content:center;background:none;border:0;padding:0}
+.box{width:22px;height:22px;border-radius:7px;border:2px solid #C9C5B8;background:#fff;display:flex;align-items:center;justify-content:center}
+.box svg{display:none}
+.done .box{border-color:#5DB07F;background:#8ED1A6}
+.done .box svg{display:block}
+.done .title{text-decoration:line-through;color:#6B6A63}
+.body{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font-size:11px;font-weight:600;padding:3px 8px;border-radius:999px}
+.title{font-size:15px;font-weight:600;line-height:1.3}
+.meta{font-size:13px;color:var(--muted);line-height:1.4}
+.time{flex:none;font-size:13px;font-weight:600;text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.del{background:none;border:0;padding:0;width:32px;height:32px;color:var(--muted);display:flex;align-items:center;justify-content:center}
+.hero{background:var(--butter);border-radius:22px;padding:18px;display:flex;flex-direction:column;gap:12px}
+.hero .k{font-size:12px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:var(--butterD)}
+.hero .t{font:600 22px/1.2 'Space Grotesk',sans-serif;letter-spacing:-.3px}
+.hero .c{font-size:14px;color:var(--butterD)}
+.hero .f{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:4px}
+.hero .w{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:700}
+.btn-w{min-height:44px;padding:0 16px;border-radius:14px;border:0;background:#fff;font-size:14px;font-weight:600}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.stat{border-radius:18px;padding:12px;display:flex;flex-direction:column;gap:2px}
+.stat b{font:700 26px 'Space Grotesk',sans-serif}
+.stat span{font-size:12px}
+.week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.day{min-height:76px;border-radius:16px;border:1px solid var(--line);background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:0}
+.day.today{border-color:#8ED1A6;border-width:2px}
+.day.sel{background:var(--sky);border-color:#8DBCEB}
+.day small{font-size:12px;font-weight:600}
+.day b{font:700 20px 'Space Grotesk',sans-serif}
+.dots{display:flex;gap:3px;height:6px}
+.dots i{width:6px;height:6px;border-radius:3px}
+.legend{display:flex;flex-wrap:wrap;gap:10px 14px}
+.legend span{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+.legend i{width:8px;height:8px;border-radius:4px}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:4px;background:#E3EEFA;border-radius:14px}
+.seg button{min-height:40px;border:0;border-radius:11px;background:transparent;font-size:14px;font-weight:500}
+.seg button.on{background:#fff;font-weight:700}
+.mailtop{display:flex;align-items:center;gap:8px}
+.unread{width:10px;height:10px;border-radius:5px;background:#8DBCEB;flex:none}
+.from{flex:1;min-width:0;font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.detect{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 8px 8px 12px;background:var(--bg);border-radius:12px;margin-top:2px}
+.detect span{font-size:12px;font-weight:600}
+.btn-mint{min-height:36px;padding:0 12px;border:0;border-radius:10px;background:var(--mint);color:var(--mintD);font-size:12px;font-weight:700}
+.ok{font-size:12px;font-weight:600;color:#166534;display:flex;align-items:center;gap:4px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.course{border-radius:18px;padding:12px;display:flex;flex-direction:column;gap:4px}
+.course b{font-size:14px}
+.course span{font-size:12px}
+.ico{flex:none;width:36px;height:36px;border-radius:12px;display:flex;align-items:center;justify-content:center}
+.pills{display:flex;gap:8px;flex-wrap:wrap}
+.pill{font-size:13px;font-weight:600;padding:8px 12px;border-radius:999px;background:#fff;border:1px solid var(--line)}
+.pill.on{background:var(--butter);border-color:var(--butter)}
+.ext{flex:none;width:44px;height:44px;border-radius:14px;background:var(--sky);color:var(--skyD);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
+.group{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.item{display:flex;gap:12px;align-items:center;padding:10px 14px;border-bottom:1px solid #F1EEE6}
+.item:last-child{border-bottom:0}
+.item .grow{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.item .grow b{font-size:15px;font-weight:600}
+.item .grow span{font-size:12px;color:var(--muted)}
+.letter{flex:none;width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font:700 16px 'Space Grotesk',sans-serif}
+.state{font-size:12px;font-weight:600;color:var(--muted)}
+.switch{flex:none;width:52px;height:44px;background:none;border:0;padding:0;display:flex;align-items:center}
+.switch span{width:52px;height:30px;border-radius:15px;background:#DDD9CD;display:flex;align-items:center;justify-content:flex-start;padding:3px;transition:background .2s}
+.switch span i{width:24px;height:24px;border-radius:12px;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.15)}
+.switch[aria-checked="true"] span{background:#8ED1A6;justify-content:flex-end}
+.wide{width:100%;min-height:48px;border:0;border-radius:14px;font-size:15px;font-weight:700}
+nav{flex:none;display:grid;grid-template-columns:repeat(5,1fr);background:#fff;border-top:1px solid var(--line);padding:6px 8px calc(env(safe-area-inset-bottom) + 6px)}
+nav button{min-height:52px;background:none;border:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#6B6A63;font-size:11px;font-weight:500;padding:0}
+nav button.on{color:var(--ink);font-weight:700}
+nav .pi{position:relative;display:flex;padding:3px 14px;border-radius:999px}
+nav button.on .pi{background:var(--mint)}
+.badge{position:absolute;top:-4px;right:2px;min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:#EF9AAB;color:#5A0B20;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.fab{position:fixed;right:20px;bottom:calc(env(safe-area-inset-bottom) + 84px);width:56px;height:56px;border-radius:28px;border:0;background:var(--mint);color:var(--mintD);box-shadow:0 6px 16px rgba(30,82,51,.22);display:flex;align-items:center;justify-content:center;z-index:5}
+.sheet-bg{position:fixed;inset:0;background:rgba(31,36,48,.35);display:flex;align-items:flex-end;z-index:10}
+.sheet{width:100%;max-height:92dvh;overflow-y:auto;background:#fff;border-radius:24px 24px 0 0;padding:20px 20px calc(env(safe-area-inset-bottom) + 20px);display:flex;flex-direction:column;gap:12px}
+.sheet .top{display:flex;justify-content:space-between;align-items:center}
+label{font-size:13px;font-weight:600;color:var(--muted);display:flex;flex-direction:column;gap:6px}
+input,select{font:inherit;font-size:16px;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);width:100%;-webkit-appearance:none;appearance:none;min-height:48px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tip{background:var(--sky);color:var(--skyD);border-radius:16px;padding:14px;font-size:14px;line-height:1.45;display:flex;gap:10px;align-items:flex-start}
+.tip b{font-weight:700}
+.toast{position:fixed;left:20px;right:20px;bottom:calc(env(safe-area-inset-bottom) + 150px);background:var(--ink);color:#fff;padding:12px 14px;border-radius:14px;font-size:14px;line-height:1.4;z-index:20}
+.empty{padding:28px 16px;border:1px dashed #C9C5B8;border-radius:16px;text-align:center;color:var(--muted);font-size:14px}
+.note{font-size:12px;color:var(--muted);line-height:1.45}
+</style>
+</head>
+<body>
+<header class="head" id="head"></header>
+<main id="main"></main>
+<button class="fab" id="fab" aria-label="Añadir algo a la agenda" data-act="open-add">
+  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+</button>
+<nav id="nav" aria-label="Secciones"></nav>
+<div id="layer"></div>
+
+<script>
+(function () {
+  'use strict';
+
+  // ---------- Data ----------
+  var SRC = {
+    aules:   { name: 'Aules',        color: '#8A3A12', bg: '#FDDCC0', dot: '#F4AE82' },
+    gmail:   { name: 'Gmail',        color: '#9F1239', bg: '#F9D4DC', dot: '#EF9AAB' },
+    outlook: { name: 'Outlook',      color: '#1E40AF', bg: '#CFE3F7', dot: '#8DBCEB' },
+    tasks:   { name: 'Google Tasks', color: '#166534', bg: '#CDEBD3', dot: '#8ED1A6' },
+    cal:     { name: 'Calendario',   color: '#5B21B6', bg: '#E3DAF7', dot: '#B9A6EA' },
+    drive:   { name: 'Drive',        color: '#7A4A06', bg: '#FBEFB8', dot: '#F0D267' },
+    mine:    { name: 'Mío',          color: '#3F3D36', bg: '#F1EEE6', dot: '#C9C5B8' }
+  };
+  var DAYN = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+  var DAYS = ['D', 'L', 'M', 'X', 'J', 'V', 'S'];
+  var DAYS3 = ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'];
+  var MES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+
+  function pad(n) { return String(n).padStart(2, '0'); }
+  function key(d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+  function addDays(d, n) { var x = new Date(d); x.setDate(x.getDate() + n); return x; }
+  function parseKey(k) { var p = k.split('-'); return new Date(+p[0], +p[1] - 1, +p[2]); }
+  var TODAY = new Date(); TODAY.setHours(0, 0, 0, 0);
+  var TK = key(TODAY);
+  function off(k) { return Math.round((parseKey(k) - TODAY) / 86400000); }
+  function rel(k) { var o = off(k), d = parseKey(k); return o === 0 ? 'Hoy' : o === 1 ? 'Mañana' : o === -1 ? 'Ayer' : DAYN[d.getDay()] + ' ' + d.getDate(); }
+  function short(k) { var d = parseKey(k); return off(k) === 0 ? 'hoy' : off(k) === 1 ? 'mañana' : DAYS3[d.getDay()] + ' ' + d.getDate(); }
+  function D(n) { return key(addDays(TODAY, n)); }
+
+  var SAMPLE = [
+    { id: 'c2', date: D(-1), time: '08:00', title: 'Prácticas de cableado en el taller', course: 'Redes locales', kind: 'Clase', src: 'cal' },
+    { id: 'c1', date: D(0), time: '12:30', title: 'Tutoría de grupo', course: 'Aula 2.04', kind: 'Evento', src: 'cal' },
+    { id: 't1', date: D(0), time: '18:00', title: 'Imprimir apuntes del tema 3', course: 'Biología y Geología', kind: 'Tarea', src: 'tasks' },
+    { id: 'a1', date: D(0), time: '23:59', title: 'Práctica 4 · Script de copias de seguridad', course: 'Sistemas operativos', kind: 'Entrega', src: 'aules' },
+    { id: 'a2', date: D(1), time: '09:00', title: 'Examen tema 3 · Geodinámica interna', course: 'Biología y Geología', kind: 'Examen', src: 'aules' },
+    { id: 'a3', date: D(2), time: '20:00', title: 'Cuestionario de subredes y VLSM', course: 'Redes locales', kind: 'Entrega', src: 'aules' },
+    { id: 'o1', date: D(3), time: '10:00', title: 'Reunión del grupo de proyecto', course: 'Teams · desde Outlook', kind: 'Evento', src: 'outlook', mail: 'm2' },
+    { id: 'g1', date: D(3), time: '14:00', title: 'Ejercicio de nómina', course: 'FOL · desde Gmail', kind: 'Entrega', src: 'gmail', mail: 'm1' },
+    { id: 't2', date: D(4), time: '', title: 'Repasar comandos grep, awk y sed', course: 'Sistemas operativos', kind: 'Tarea', src: 'tasks' }
+  ];
+  function mails() {
+    return [
+      { id: 'm1', src: 'gmail', from: 'Prof. de FOL', subject: 'Ejercicio de nómina', preview: 'Os dejo el enunciado del ejercicio de nómina. Hay que entregarlo el ' + short(D(3)) + ' antes de las 14:00.', time: '21:40', unread: true, detect: 'Entrega · ' + short(D(3)) + ', 14:00' },
+      { id: 'm2', src: 'outlook', from: 'Grupo de proyecto', subject: 'Reunión para repartir el trabajo', preview: '¿Nos vemos el ' + short(D(3)) + ' a las 10 por Teams para repartir las partes?', time: '19:05', unread: true, detect: 'Evento · ' + short(D(3)) + ', 10:00' },
+      { id: 'm3', src: 'gmail', from: 'Aules GVA', subject: 'Nueva tarea: Cuestionario de subredes y VLSM', preview: 'Se ha añadido una actividad en Redes locales. Fecha límite: ' + short(D(2)) + ', 20:00.', time: '17:22', unread: false, detect: 'Entrega · ' + short(D(2)) + ', 20:00' },
+      { id: 'm4', src: 'outlook', from: 'Secretaría del centro', subject: 'Horario de tutorías del trimestre', preview: 'Adjuntamos el horario actualizado de tutorías.', time: 'Ayer', unread: false, detect: '' },
+      { id: 'm5', src: 'gmail', from: 'Google Drive', subject: 'Te han compartido «Esquema subredes»', preview: 'Un compañero ha compartido un archivo contigo.', time: 'Ayer', unread: false, detect: '' }
+    ];
+  }
+  var I = {
+    home: 'M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10',
+    cal: 'M4 6h16v15H4zM4 10h16M8 3v4M16 3v4',
+    mail: 'M3 6h18v12H3zM3 7l9 7 9-7',
+    school: 'M2 9l10-5 10 5-10 5zM6 11v5c3 2 9 2 12 0v-5',
+    folder: 'M3 6h6l2 2h10v11H3z',
+    check: 'M5 12l5 5 9-10',
+    back: 'M15 5l-7 7 7 7',
+    clock: 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18zM12 7v5l3 2',
+    task: 'M9 4h6v3H9zM6 6h12v15H6zM9 12h6M9 16h4',
+    star: 'M12 3l2.5 5 5.5.8-4 3.9.9 5.5L12 15.6 7.1 18.2l.9-5.5-4-3.9 5.5-.8z',
+    doc: 'M6 3h9l4 4v14H6zM14 3v5h5',
+    link: 'M10 14a4 4 0 0 0 6 0l3-3a4 4 0 0 0-6-6l-1 1M14 10a4 4 0 0 0-6 0l-3 3a4 4 0 0 0 6 6l1-1',
+    x: 'M6 6l12 12M18 6L6 18',
+    trash: 'M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3',
+    bell: 'M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 20a2 2 0 0 0 4 0',
+    share: 'M12 3v12M8 7l4-4 4 4M5 12v8h14v-8'
+  };
+  function svg(d, size, sw, color) { return '<svg width="' + (size || 18) + '" height="' + (size || 18) + '" viewBox="0 0 24 24" fill="none" stroke="' + (color || 'currentColor') + '" stroke-width="' + (sw || 2) + '" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' + d + '"></path></svg>'; }
+  var LOGO = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M8 8l8 8M8.5 6h7" stroke="#2F6B4A"></path><circle cx="6" cy="6" r="3" fill="#8DBCEB" stroke="#2F6B4A"></circle><circle cx="18" cy="6" r="3" fill="#F0D267" stroke="#2F6B4A"></circle><circle cx="18" cy="18" r="3" fill="#EF9AAB" stroke="#2F6B4A"></circle></svg>';
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+
+  // ---------- State ----------
+  var STORE = 'nexo-v1';
+  var S = { tab: 'inicio', sel: TK, mailSrc: 'todos', done: {}, added: { m1: true, m3: true }, prefs: { d1: true, h2: true, ex3: true, ex1: true, daily: true, mail: false }, custom: [], sample: true, notified: {}, hideTip: false, sheet: null };
+  try { var saved = JSON.parse(localStorage.getItem(STORE) || 'null'); if (saved) { for (var k in saved) S[k] = saved[k]; } } catch (e) {}
+  S.sheet = null; S.sel = S.sel || TK;
+  function save() { try { var c = Object.assign({}, S); delete c.sheet; localStorage.setItem(STORE, JSON.stringify(c)); } catch (e) {} }
+  function set(p) { Object.assign(S, p); save(); render(); }
+
+  function items() {
+    var list = [];
+    if (S.sample) list = SAMPLE.filter(function (it) { return !it.mail || S.added[it.mail]; });
+    list = list.concat(S.custom || []);
+    return list.slice().sort(function (a, b) { return (a.date + (a.time || '00:00')).localeCompare(b.date + (b.time || '00:00')); });
+  }
+  function isDone(it) { return !!S.done[it.id]; }
+
+  // ---------- Pieces ----------
+  function row(it) {
+    var s = SRC[it.src] || SRC.mine;
+    var kb = it.kind === 'Examen' ? 'background:#FAD1E0;color:#9D174D' : 'background:#F1EEE6;color:#3F3D36';
+    return '<div class="card row' + (isDone(it) ? ' done' : '') + '">' +
+      '<button class="check" data-act="toggle" data-id="' + esc(it.id) + '" aria-label="' + (isDone(it) ? 'Marcar como pendiente' : 'Marcar como hecho') + '"><span class="box">' + svg(I.check, 14, 3, '#1E5233') + '</span></button>' +
+      '<div class="body"><div class="chips"><span class="chip" style="background:' + s.bg + ';color:' + s.color + '">' + s.name + '</span><span class="chip" style="' + kb + '">' + esc(it.kind) + '</span></div>' +
+      '<div class="title">' + esc(it.title) + '</div>' + (it.course ? '<div class="meta">' + esc(it.course) + '</div>' : '') + '</div>' +
+      '<div class="time">' + esc(it.time || 'Todo el día') +
+      (it.src === 'mine' ? '<button class="del" data-act="del" data-id="' + esc(it.id) + '" aria-label="Borrar">' + svg(I.trash, 16) + '</button>' : '') + '</div></div>';
+  }
+
+  function viewInicio() {
+    var all = items();
+    var pend = all.filter(function (it) { return !isDone(it) && off(it.date) >= 0 && off(it.date) < 7; });
+    var hero = all.filter(function (it) { return !isDone(it) && off(it.date) >= 0 && (it.kind === 'Entrega' || it.kind === 'Examen'); })[0];
+    var h = '<div class="stack">';
+    var standalone = window.navigator.standalone || (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches);
+    if (!standalone && !S.hideTip) {
+      h += '<div class="tip">' + svg(I.share, 20, 2) + '<div style="flex:1">Para tenerla como app: en Safari pulsa <b>Compartir</b> y luego <b>Añadir a pantalla de inicio</b>.</div><button class="del" data-act="hide-tip" aria-label="Cerrar">' + svg(I.x, 16) + '</button></div>';
+    }
+    if (hero) {
+      var s = SRC[hero.src] || SRC.mine;
+      h += '<div class="hero"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span class="k">Lo más urgente</span><span class="chip" style="font-size:12px;padding:4px 10px;background:' + s.bg + ';color:' + s.color + '">' + s.name + ' · ' + esc(hero.kind) + '</span></div>' +
+        '<div class="t">' + esc(hero.title) + '</div>' + (hero.course ? '<div class="c">' + esc(hero.course) + '</div>' : '') +
+        '<div class="f"><div class="w">' + svg(I.clock, 18) + rel(hero.date) + (hero.time ? ' · ' + esc(hero.time) : '') + '</div>' +
+        '<button class="btn-w" data-act="toggle" data-id="' + esc(hero.id) + '">Marcar hecha</button></div></div>';
+    }
+    var n = function (k) { return pend.filter(function (it) { return it.kind === k; }).length; };
+    h += '<div class="stats">' +
+      '<div class="stat" style="background:var(--sky);color:var(--skyD)"><b>' + n('Entrega') + '</b><span>Entregas en 7 días</span></div>' +
+      '<div class="stat" style="background:var(--rose);color:var(--roseD)"><b>' + n('Examen') + '</b><span>Exámenes en 7 días</span></div>' +
+      '<div class="stat" style="background:var(--mint);color:var(--mintD)"><b>' + n('Tarea') + '</b><span>Tareas pendientes</span></div></div>';
+    var today = all.filter(function (it) { return it.date === TK; });
+    h += '<div class="list"><h2>Hoy</h2>' + (today.length ? today.map(row).join('') : '<div class="empty">Nada para hoy. Pulsa + para añadir algo.</div>') + '</div>';
+    var up = '';
+    for (var i = 1; i < 7; i++) {
+      var dk = D(i), its = all.filter(function (it) { return it.date === dk; });
+      if (its.length) up += '<div class="list"><div class="glabel">' + (i === 1 ? 'Mañana · ' + DAYN[parseKey(dk).getDay()].toLowerCase() + ' ' + parseKey(dk).getDate() : rel(dk)) + '</div>' + its.map(row).join('') + '</div>';
+    }
+    if (up) h += '<div class="list"><h2>Próximos días</h2>' + up + '</div>';
+    return h + '</div>';
+  }
+
+  function viewSemana() {
+    var all = items();
+    var h = '<div class="stack"><div class="week">';
+    for (var i = 0; i < 7; i++) {
+      var dk = D(i), d = parseKey(dk), its = all.filter(function (it) { return it.date === dk; });
+      var seen = {}, dots = '';
+      its.forEach(function (it) { if (!seen[it.src] && Object.keys(seen).length < 3) { seen[it.src] = 1; dots += '<i style="background:' + (SRC[it.src] || SRC.mine).dot + '"></i>'; } });
+      h += '<button class="day' + (i === 0 ? ' today' : '') + (dk === S.sel ? ' sel' : '') + '" data-act="day" data-k="' + dk + '" aria-label="' + DAYN[d.getDay()] + ' ' + d.getDate() + '"><small>' + DAYS[d.getDay()] + '</small><b>' + d.getDate() + '</b><span class="dots">' + dots + '</span></button>';
+    }
+    h += '</div>';
+    var sel = all.filter(function (it) { return it.date === S.sel; });
+    var sd = parseKey(S.sel);
+    var lbl = off(S.sel) === 0 ? 'Hoy, ' + DAYN[sd.getDay()].toLowerCase() + ' ' + sd.getDate() : off(S.sel) === 1 ? 'Mañana, ' + DAYN[sd.getDay()].toLowerCase() + ' ' + sd.getDate() : DAYN[sd.getDay()] + ' ' + sd.getDate();
+    h += '<div style="display:flex;justify-content:space-between;align-items:baseline"><h2>' + lbl + '</h2><span class="meta">' + (sel.length === 1 ? '1 cosa' : sel.length + ' cosas') + '</span></div>';
+    h += sel.length ? '<div class="list">' + sel.map(row).join('') + '</div>' : '<div class="empty">Día libre. No tienes nada apuntado.</div>';
+    h += '<div class="legend">' + ['aules', 'gmail', 'outlook', 'tasks', 'cal', 'mine'].map(function (k) { return '<span><i style="background:' + SRC[k].dot + '"></i>' + SRC[k].name + '</span>'; }).join('') + '</div>';
+    return h + '</div>';
+  }
+
+  function viewCorreo() {
+    var h = '<div class="list"><div class="seg">' + [['todos', 'Todos'], ['gmail', 'Gmail'], ['outlook', 'Outlook']].map(function (t) { return '<button class="' + (S.mailSrc === t[0] ? 'on' : '') + '" data-act="mailsrc" data-k="' + t[0] + '">' + t[1] + '</button>'; }).join('') + '</div>';
+    mails().filter(function (m) { return S.mailSrc === 'todos' || m.src === S.mailSrc; }).forEach(function (m) {
+      var s = SRC[m.src];
+      h += '<div class="card" style="display:flex;flex-direction:column;gap:8px"><div class="mailtop">' + (m.unread ? '<span class="unread"></span>' : '') + '<span class="from">' + esc(m.from) + '</span><span class="chip" style="background:' + s.bg + ';color:' + s.color + '">' + s.name + '</span><span class="meta" style="font-size:12px">' + m.time + '</span></div>' +
+        '<div style="font-size:14px;font-weight:600">' + esc(m.subject) + '</div><div class="meta">' + esc(m.preview) + '</div>';
+      if (m.detect) h += '<div class="detect"><span style="display:flex;align-items:center;gap:8px">' + svg(I.cal, 16) + esc(m.detect) + '</span>' + (S.added[m.id] ? '<span class="ok">' + svg(I.check, 14, 2.5) + 'En tu agenda</span>' : '<button class="btn-mint" data-act="addmail" data-id="' + m.id + '">Añadir a la agenda</button>') + '</div>';
+      h += '</div>';
+    });
+    return h + '<p class="note">Correos de ejemplo. Cuando conectemos Gmail y Outlook de verdad, aquí saldrán los tuyos.</p></div>';
+  }
+
+  function viewAules() {
+    var feed = [
+      { kind: 'Nueva tarea', course: 'Redes locales', text: 'Cuestionario de subredes y VLSM', meta: 'Límite: ' + short(D(2)) + ', 20:00', time: 'hace 5 h', ag: true, ic: I.task },
+      { kind: 'Examen', course: 'Biología y Geología', text: 'Examen tema 3 · Geodinámica interna', meta: short(D(1)) + ', 09:00', time: 'ayer', ag: true, ic: I.star },
+      { kind: 'Calificación', course: 'Sistemas operativos', text: 'Práctica 3 · Permisos y usuarios', meta: 'Nota publicada', time: 'ayer', ag: false, ic: I.check },
+      { kind: 'Recurso nuevo', course: 'FOL', text: 'Apuntes: la nómina y sus partes', meta: 'PDF', time: 'hace 2 días', ag: false, ic: I.doc },
+      { kind: 'Nueva tarea', course: 'Sistemas operativos', text: 'Práctica 4 · Script de copias de seguridad', meta: 'Límite: hoy, 23:59', time: 'hace 2 días', ag: true, ic: I.task }
+    ];
+    var h = '<div class="stack"><div class="grid2">' +
+      '<div class="course" style="background:var(--sky);color:var(--skyD)"><b>Redes locales</b><span>1 entrega · ' + short(D(2)) + '</span></div>' +
+      '<div class="course" style="background:var(--mint);color:var(--mintD)"><b>Sistemas operativos</b><span>1 entrega · hoy</span></div>' +
+      '<div class="course" style="background:var(--butter);color:var(--butterD)"><b>Biología y Geología</b><span>1 examen · ' + short(D(1)) + '</span></div>' +
+      '<div class="course" style="background:var(--lav);color:var(--lavD)"><b>FOL</b><span>Nada pendiente</span></div></div><div class="list"><h2>Novedades</h2>';
+    feed.forEach(function (n) {
+      h += '<div class="card row"><div class="ico" style="background:#FDDCC0">' + svg(n.ic, 18, 2, '#8A3A12') + '</div><div class="body" style="gap:4px"><div style="display:flex;justify-content:space-between;gap:8px"><span style="font-size:12px;font-weight:700;color:#8A3A12">' + n.kind + '</span><span class="meta" style="font-size:12px">' + n.time + '</span></div>' +
+        '<div class="title">' + n.text + '</div><div class="meta">' + n.course + ' · ' + n.meta + '</div>' + (n.ag ? '<span class="ok" style="margin-top:4px">' + svg(I.check, 14, 2.5) + 'Añadido a tu agenda con aviso</span>' : '') + '</div></div>';
+    });
+    return h + '</div><p class="note">Novedades de ejemplo. Falta conectar tu cuenta de Aules.</p></div>';
+  }
+
+  function viewDrive() {
+    var files = [
+      ['backup.sh', 'Sistemas operativos', 'Hoy', 'Práctica 4', 'SH'],
+      ['Apuntes tema 3 · Geodinámica.pdf', 'Biología y Geología', 'Ayer', 'Examen tema 3', 'PDF'],
+      ['Esquema subredes.png', 'Redes locales', 'Ayer', 'Cuestionario VLSM', 'PNG'],
+      ['Ejercicio nómina.xlsx', 'FOL', 'Hace 2 días', 'Ejercicio de nómina', 'XLS']
+    ];
+    var h = '<div class="list"><div class="pills"><span class="pill on">Recientes</span><span class="pill">Por asignatura</span><span class="pill">Compartidos</span></div>';
+    files.forEach(function (f) {
+      h += '<div class="card row" style="align-items:center"><div class="ext">' + f[4] + '</div><div class="body" style="gap:3px"><div class="title" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + f[0] + '</div><div class="meta">' + f[1] + ' · ' + f[2] + '</div><div style="font-size:12px;font-weight:600;display:flex;align-items:center;gap:4px">' + svg(I.link, 13, 2.2) + 'Vinculado a: ' + f[3] + '</div></div></div>';
+    });
+    return h + '<p class="note">Archivos de ejemplo. Falta conectar tu Google Drive.</p></div>';
+  }
+
+  function viewCuentas() {
+    var con = [['aules', 'A', 'Aules · GVA', 'Tareas, exámenes y avisos'], ['gmail', 'G', 'Gmail', 'Detecta fechas en correos'], ['outlook', 'O', 'Outlook', 'Correo del centro'], ['tasks', 'T', 'Google Tasks', 'Tus listas de tareas'], ['cal', 'C', 'Google Calendar', 'Clases y tutorías'], ['drive', 'D', 'Google Drive', 'Archivos de cada entrega']];
+    var prefs = [['d1', 'Entregas: 1 día antes'], ['h2', 'Entregas: 2 horas antes'], ['ex3', 'Exámenes: 3 días antes'], ['ex1', 'Exámenes: la tarde anterior'], ['daily', 'Resumen del día'], ['mail', 'Cada correo nuevo']];
+    var perm = ('Notification' in window) ? Notification.permission : 'unsupported';
+    var h = '<div class="stack"><div class="list"><h2>Avisos en el móvil</h2>';
+    if (perm === 'granted') h += '<div class="tip" style="background:var(--mint);color:var(--mintD)">' + svg(I.bell, 20) + '<div>Avisos activados. Te avisaré de lo que venza en las próximas 24 horas cada vez que abras Nexo.</div></div><button class="wide" style="background:var(--butter);color:var(--ink)" data-act="test-notif">Enviar un aviso de prueba</button>';
+    else if (perm === 'unsupported') h += '<div class="tip">' + svg(I.bell, 20) + '<div>Para recibir avisos, primero añade Nexo a tu <b>pantalla de inicio</b> desde Safari y ábrela desde su icono.</div></div>';
+    else h += '<button class="wide" style="background:var(--mint);color:var(--mintD)" data-act="enable-notif">Activar avisos</button>';
+    h += '</div><div class="list"><h2>Cuándo avisarte</h2><div class="group">' + prefs.map(function (p) {
+      var on = !!S.prefs[p[0]];
+      return '<div class="item"><span class="grow"><b style="font-weight:500;font-size:14px">' + p[1] + '</b></span><button class="switch" role="switch" aria-checked="' + on + '" aria-label="' + p[1] + '" data-act="pref" data-k="' + p[0] + '"><span><i></i></span></button></div>';
+    }).join('') + '</div></div>';
+    h += '<div class="list"><h2>Conexiones</h2><div class="group">' + con.map(function (c) {
+      var s = SRC[c[0]];
+      return '<div class="item"><span class="letter" style="background:' + s.bg + ';color:' + s.color + '">' + c[1] + '</span><span class="grow"><b>' + c[2] + '</b><span>' + c[3] + '</span></span><span class="state">Próximamente</span></div>';
+    }).join('') + '</div></div>';
+    h += '<div class="list"><h2>Datos</h2><div class="group"><div class="item"><span class="grow"><b style="font-weight:500;font-size:14px">Mostrar datos de ejemplo</b><span>Apágalo para ver solo lo que añades tú</span></span><button class="switch" role="switch" aria-checked="' + !!S.sample + '" aria-label="Mostrar datos de ejemplo" data-act="sample"><span><i></i></span></button></div></div></div>';
+    return h + '</div>';
+  }
+
+  function sheetAdd() {
+    return '<div class="sheet-bg" data-act="close-bg"><form class="sheet" id="addform" role="dialog" aria-label="Añadir a la agenda">' +
+      '<div class="top"><h2>Añadir a la agenda</h2><button type="button" class="del" data-act="close" aria-label="Cerrar">' + svg(I.x, 20) + '</button></div>' +
+      '<label>Qué es<input name="title" required placeholder="Ej.: Práctica 5 de Redes" autocomplete="off"></label>' +
+      '<label>Asignatura (opcional)<input name="course" placeholder="Ej.: Redes locales" autocomplete="off"></label>' +
+      '<label>Tipo<select name="kind"><option>Entrega</option><option>Examen</option><option>Tarea</option><option>Evento</option></select></label>' +
+      '<div class="two"><label>Día<input type="date" name="date" required value="' + S.sel + '"></label><label>Hora<input type="time" name="time"></label></div>' +
+      '<button type="submit" class="wide" style="background:var(--mint);color:var(--mintD)">Guardar</button></form></div>';
+  }
+
+  // ---------- Render ----------
+  var HEAD = {
+    inicio: ['Hola, Guillem', DAYN[TODAY.getDay()] + ', ' + TODAY.getDate() + ' de ' + MES[TODAY.getMonth()]],
+    semana: ['Próximos 7 días', 'Toca un día para ver qué tienes'],
+    correo: ['Correo', 'Gmail y Outlook en un solo sitio'],
+    aules: ['Aules', 'Tus cursos de GVA'],
+    drive: ['Drive', 'Archivos de clase recientes'],
+    cuentas: ['Cuentas y avisos', 'Lo que Nexo tiene conectado']
+  };
+  var TABS = [['inicio', 'Inicio', I.home], ['semana', 'Semana', I.cal], ['correo', 'Correo', I.mail], ['aules', 'Aules', I.school], ['drive', 'Drive', I.folder]];
+
+  function render() {
+    var hd = HEAD[S.tab];
+    document.getElementById('head').innerHTML =
+      '<div class="brand"><div class="logo"><i>' + LOGO + '</i>nexo</div><button class="avatar" data-act="tab" data-k="cuentas" aria-label="Cuentas y avisos">G</button></div>' +
+      '<div>' + (S.tab === 'cuentas' ? '<button class="back" data-act="tab" data-k="inicio">' + svg(I.back, 16) + 'Volver</button>' : '') + '<h1>' + hd[0] + '</h1><div class="sub">' + hd[1] + '</div></div>';
+    var v = { inicio: viewInicio, semana: viewSemana, correo: viewCorreo, aules: viewAules, drive: viewDrive, cuentas: viewCuentas }[S.tab];
+    document.getElementById('main').innerHTML = v();
+    var unread = mails().filter(function (m) { return m.unread; }).length;
+    document.getElementById('nav').innerHTML = TABS.map(function (t) {
+      var badge = t[0] === 'correo' ? unread : t[0] === 'aules' ? 2 : 0;
+      return '<button class="' + (S.tab === t[0] ? 'on' : '') + '" data-act="tab" data-k="' + t[0] + '"><span class="pi">' + svg(t[2], 24, S.tab === t[0] ? 2.2 : 1.8) + (badge && S.sample ? '<span class="badge">' + badge + '</span>' : '') + '</span>' + t[1] + '</button>';
+    }).join('');
+    document.getElementById('fab').style.display = (S.tab === 'inicio' || S.tab === 'semana') ? 'flex' : 'none';
+    document.getElementById('layer').innerHTML = S.sheet === 'add' ? sheetAdd() : '';
+  }
+
+  var toastTimer;
+  function toast(msg) {
+    var el = document.createElement('div'); el.className = 'toast'; el.setAttribute('role', 'status'); el.textContent = msg;
+    document.body.appendChild(el); clearTimeout(toastTimer); toastTimer = setTimeout(function () { el.remove(); }, 3200);
+  }
+
+  // ---------- Notifications ----------
+  function notify(title, body) {
+    try {
+      if (navigator.serviceWorker && navigator.serviceWorker.getRegistration) {
+        return navigator.serviceWorker.getRegistration().then(function (reg) {
+          if (reg) return reg.showNotification(title, { body: body, icon: 'icons/icon-192.png', badge: 'icons/icon-192.png' });
+          new Notification(title, { body: body });
+        });
+      }
+      new Notification(title, { body: body });
+    } catch (e) {}
+  }
+  function checkDue() {
+    if (!('Notification' in window) || Notification.permission !== 'granted') return;
+    var now = new Date();
+    items().forEach(function (it) {
+      if (isDone(it) || S.notified[it.id]) return;
+      if (it.kind !== 'Entrega' && it.kind !== 'Examen') return;
+      var t = parseKey(it.date); var hm = (it.time || '23:59').split(':'); t.setHours(+hm[0], +hm[1]);
+      var hours = (t - now) / 3600000;
+      var limit = it.kind === 'Examen' ? (S.prefs.ex3 ? 72 : S.prefs.ex1 ? 24 : 0) : (S.prefs.d1 ? 24 : S.prefs.h2 ? 2 : 0);
+      if (hours > 0 && hours <= limit) {
+        S.notified[it.id] = true;
+        notify(it.kind + ' ' + rel(it.date).toLowerCase() + (it.time ? ' a las ' + it.time : ''), it.title + (it.course ? ' (' + it.course + ')' : '') + '. ¡Acuérdate!');
+      }
+    });
+    save();
+  }
+
+  // ---------- Events ----------
+  document.addEventListener('click', function (e) {
+    var el = e.target.closest('[data-act]'); if (!el) return;
+    var a = el.getAttribute('data-act'), id = el.getAttribute('data-id'), k = el.getAttribute('data-k');
+    if (a === 'close-bg' && e.target !== el) return;
+    switch (a) {
+      case 'tab': set({ tab: k }); document.getElementById('main').scrollTop = 0; break;
+      case 'toggle': var d = Object.assign({}, S.done); d[id] = !d[id]; set({ done: d }); break;
+      case 'day': set({ sel: k }); break;
+      case 'mailsrc': set({ mailSrc: k }); break;
+      case 'addmail': var ad = Object.assign({}, S.added); ad[id] = true; set({ added: ad }); toast('Añadido a tu agenda'); break;
+      case 'pref': var p = Object.assign({}, S.prefs); p[k] = !p[k]; set({ prefs: p }); break;
+      case 'sample': set({ sample: !S.sample }); break;
+      case 'hide-tip': set({ hideTip: true }); break;
+      case 'open-add': S.sheet = 'add'; render(); setTimeout(function () { var i = document.querySelector('#addform input[name=title]'); if (i) i.focus(); }, 50); break;
+      case 'close': case 'close-bg': S.sheet = null; render(); break;
+      case 'del': set({ custom: S.custom.filter(function (c) { return c.id !== id; }) }); toast('Borrado'); break;
+      case 'enable-notif':
+        if (!('Notification' in window)) { toast('Instala Nexo en la pantalla de inicio para poder recibir avisos.'); break; }
+        Promise.resolve(Notification.requestPermission()).then(function (r) {
+          render();
+          if (r === 'granted') { notify('Avisos activados', 'Nexo te recordará tus entregas y exámenes.'); checkDue(); }
+          else toast('Sin permiso no puedo avisarte. Puedes activarlo en Ajustes › Notificaciones › Nexo.');
+        }).catch(function () { toast('Este navegador no deja activar avisos aquí.'); });
+        break;
+      case 'test-notif': notify('Ejemplo de aviso', 'Mañana tienes un examen. ¡Repasa hoy un rato!'); break;
+    }
+  });
+  document.addEventListener('submit', function (e) {
+    if (e.target.id !== 'addform') return;
+    e.preventDefault();
+    var f = new FormData(e.target);
+    var title = String(f.get('title') || '').trim(); if (!title) return;
+    var it = { id: 'u' + Date.now(), title: title, course: String(f.get('course') || '').trim(), kind: String(f.get('kind')), date: String(f.get('date') || TK), time: String(f.get('time') || ''), src: 'mine' };
+    S.sheet = null; set({ custom: (S.custom || []).concat([it]), sel: it.date }); toast('Guardado en tu agenda');
+  });
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) checkDue(); });
+
+  if ('serviceWorker' in navigator) { try { navigator.serviceWorker.register('sw.js').catch(function () {}); } catch (e) {} }
+  render();
+  checkDue();
+})();
+</script>
+</body>
+</html>
